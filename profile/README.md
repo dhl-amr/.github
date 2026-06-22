@@ -109,68 +109,18 @@ DIR = {1:+1, 2:+1, 3:+1, 4:+1} # 전진 시 거꾸로 도는 바퀴는 -1
 
 ## 2. 라즈베리파이 셋업
 
-### 2.1 OS
-- **Ubuntu Server 22.04 LTS (64-bit / arm64)** 설치.
-- ⚠️ **32-bit(armhf) 금지** — `ros-humble-*` 패키지 못 찾음(armhf 미지원).
-- 재이미징 후 Mac SSH 시: `ssh-keygen -R dhl-amr.local` (host key 변경), 비번 입력 시 한글 IME 끄기.
+> 📄 **전체 설치 단계(OS 이미징 → ROS2 → 소스/라이다 빌드 → udev → I2C → venv)는
+> [`docs/rpi4_setup.md`](docs/rpi4_setup.md) 참고.** 아래는 요약.
 
-### 2.2 ROS2 Humble
-```bash
-# universe 저장소 + ROS2 apt 키/소스 추가 후
-sudo apt update
-sudo apt install -y ros-humble-ros-base   # 또는 desktop
-```
+- **OS**: Ubuntu Server 22.04 LTS **64-bit(arm64)** — 32-bit(armhf) 금지.
+- **ROS2**: Humble (`ros-humble-desktop` + `ros-dev-tools`).
+- **환경변수**(`~/.bashrc`): `ROS_DOMAIN_ID=42`, `MACHINE_TYPE=JetAuto`, `HOST/MASTER=jetauto`, `need_compile=True`, `LIDAR_TYPE=G4`.
+- **빌드**: Hiwonder 소스(`amr_build_setup.sh`, 라이다 launch·SLAM 설정용) + 라이다 드라이버(`lidar_g4_driver_build.sh`, ★humble 브랜치).
+- **udev**: `/dev/lidar`(`10c4:ea60`).
+- **I2C 활성화**: `/boot/firmware/config.txt`에 `dtparam=i2c_arm=on` → 재부팅 → `i2cdetect -y 1`에 `0x34`.
+- **venv**: `amr_env_setup.sh` → `~/amr_env` (**반드시 `--system-site-packages`**, 아니면 `rclpy` import 실패). 매 작업 시 `source ~/amr_env/activate_amr.sh`.
 
-### 2.3 환경변수 (`~/.bashrc` 끝에 추가)
-```bash
-source /opt/ros/humble/setup.bash
-[ -f ~/ros2_ws/install/setup.bash ] && source ~/ros2_ws/install/setup.bash
-export ROS_DOMAIN_ID=42
-export MACHINE_TYPE=JetAuto
-export HOST=jetauto
-export MASTER=jetauto
-export need_compile=True
-export LIDAR_TYPE=G4
-```
-
-### 2.4 Hiwonder 소스 빌드 (ros2_ws)
-```bash
-bash amr_build_setup.sh
-# (slam_toolbox/nav2/controller/peripherals 등 colcon 빌드. xf_mic_asr_offline, yolov5_ros2 제외)
-```
-
-### 2.5 라이다 드라이버 빌드
-```bash
-bash lidar_g4_driver_build.sh
-# YDLidar-SDK + ydlidar_ros2_driver(★humble 브랜치) 빌드.
-# master 브랜치는 declare_parameter API 차이로 Humble 컴파일 실패.
-```
-
-### 2.6 udev 규칙 (라이다 고정 디바이스명)
-```bash
-# /etc/udev/rules.d/99-lidar.rules
-SUBSYSTEM=="tty", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", MODE="0666", SYMLINK+="lidar"
-sudo udevadm control --reload && sudo udevadm trigger
-# → /dev/lidar 생성
-```
-
-### 2.7 I2C 활성화
-```bash
-# /boot/firmware/config.txt 에 추가 후 재부팅
-dtparam=i2c_arm=on
-# 확인:
-i2cdetect -y 1     # 모듈 연결 시 0x34 표시
-```
-
-### 2.8 가상환경(venv) + 의존성
-```bash
-bash amr_env_setup.sh      # ~/amr_env 생성 (--system-site-packages 필수: rclpy 보이게)
-# 추가 apt 의존성
-sudo apt install -y ros-humble-laser-filters ros-humble-teleop-twist-keyboard \
-                    ros-humble-slam-toolbox ros-humble-foxglove-bridge
-```
-> ⚠️ venv는 **반드시 `--system-site-packages`** 로 생성. 일반 venv는 `rclpy` import 실패.
-> 매 작업 시: `source ~/amr_env/activate_amr.sh` (ROS→워크스페이스→venv 순서 고정).
+자세한 명령·전송(scp)·검증은 [`docs/rpi4_setup.md`](docs/rpi4_setup.md).
 
 ---
 
