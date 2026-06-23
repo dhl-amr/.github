@@ -25,12 +25,14 @@
 
 단계별 가이드는 **`docs` 저장소**에 있다. **01 → 04 순서**로 따라 하면 로봇이 지도를 그린다.
 
-1. [라즈베리파이 셋업](../../docs/01-pi-setup.md)
-2. [라이다 연결](../../docs/02-lidar.md)
-3. [모터 연결 & 점검](../../docs/03-motor.md)
-4. [운전 & 매핑](../../docs/04-drive-mapping.md)
+1. [라즈베리파이 셋업](https://github.com/dhl-amr/docs/blob/main/01-pi-setup.md)
+2. [라이다 연결](https://github.com/dhl-amr/docs/blob/main/02-lidar.md)
+3. [모터 연결 & 점검](https://github.com/dhl-amr/docs/blob/main/03-motor.md)
+4. [운전 & 매핑](https://github.com/dhl-amr/docs/blob/main/04-drive-mapping.md)
 
-코드는 → [`dhl-amr-rpi4`](../../dhl-amr-rpi4) 저장소
+코드는 → [`dhl-amr-rpi4`](https://github.com/dhl-amr/dhl-amr-rpi4) 저장소
+
+> `docs`·`dhl-amr-rpi4`는 비공개 저장소라 조직 멤버만 열람 가능합니다.
 
 ## 진행 상황
 
