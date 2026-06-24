@@ -25,6 +25,7 @@
 
 단계별 가이드는 **`docs` 저장소**에 있다. **01 → 04 순서**로 따라 하면 로봇이 지도를 그린다.
 
+0. [배선 & 전원](https://github.com/dhl-amr/docs/blob/main/00-wiring.md)
 1. [라즈베리파이 셋업](https://github.com/dhl-amr/docs/blob/main/01-pi-setup.md)
 2. [라이다 연결](https://github.com/dhl-amr/docs/blob/main/02-lidar.md)
 3. [모터 연결 & 점검](https://github.com/dhl-amr/docs/blob/main/03-motor.md)
